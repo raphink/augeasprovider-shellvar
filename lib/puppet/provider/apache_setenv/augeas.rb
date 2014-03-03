@@ -5,10 +5,8 @@
 
 require File.dirname(__FILE__) + '/../../../augeasproviders/provider'
 
-Puppet::Type.type(:apache_setenv).provide(:augeas) do
+Puppet::Type.type(:apache_setenv).provide(:augeas, :parent => Puppet::Type.type(:augeasprovider).provider(:default)) do
   desc "Use Augeas API to update SetEnv in Apache"
-
-  include AugeasProviders::Provider
 
   lens { 'Httpd.lns' }
 
