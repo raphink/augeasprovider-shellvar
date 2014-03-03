@@ -27,6 +27,7 @@ env:
   - PUPPET=2.7.0 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
   - PUPPET=3.4 RUBY_AUGEAS=0.3.0 AUGEAS=1.2.0
 matrix:
+  fast_finish: true
   exclude:
     # No support for Ruby 1.9 before Puppet 2.7
     - rvm: 1.9.3
