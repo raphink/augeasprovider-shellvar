@@ -15,13 +15,6 @@ require 'augeas' if Puppet.features.augeas?
 #     end
 #
 Puppet::Type.type(:augeasprovider).provide(:default) do
-  class << self
-    # Override Augeas' loadpath, usually for testing with a separate Augeas
-    # checkout.
-    # @api private
-    attr_accessor :loadpath
-  end
-
   def self.included(base)
     base.send(:extend, ClassMethods)
   end
@@ -50,9 +43,9 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
   # @api public
   def self.aug_handler
     if using_post_resource_eval?
-      @aug ||= Augeas.open(nil, loadpath, Augeas::NO_MODL_AUTOLOAD)
+      @aug ||= Augeas.open(nil, nil, Augeas::NO_MODL_AUTOLOAD)
     else
-      Augeas.open(nil, loadpath, Augeas::NO_MODL_AUTOLOAD)
+      Augeas.open(nil, nil, Augeas::NO_MODL_AUTOLOAD)
     end
   end
 
@@ -572,20 +565,6 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
     @aug = nil
   end
 
-  #private
-
-  # Returns a set of load paths to use when initialising Augeas.
-  #
-  # @return [String] colon-separated string of module paths, or nil if defaults are to be used
-  def self.loadpath
-    loadpath = nil
-    plugins = File.join(Puppet[:libdir], 'augeas', 'lenses')
-    if File.exists?(plugins)
-      loadpath = loadpath.to_s.split(File::PATH_SEPARATOR).push(plugins).join(File::PATH_SEPARATOR)
-    end
-    loadpath
-  end
-
   # Opens Augeas and returns a handle to use.  It loads only the file
   # identified by {#target} (and the supplied `resource`) using {#lens}.
   #
@@ -630,7 +609,7 @@ Puppet::Type.type(:augeasprovider).provide(:default) do
 
       if File.exist?(file) && aug.match("/files#{file}").empty?
         message = aug.get("/augeas/files#{file}/error/message")
-        fail("Augeas didn't load #{file} with #{lens} from #{loadpath}: #{message}")
+        fail("Augeas didn't load #{file} with #{lens}: #{message}")
       end
 
       if block_given?
