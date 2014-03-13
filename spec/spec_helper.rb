@@ -1,16 +1,11 @@
 require 'pathname'
 dir = Pathname.new(__FILE__).parent
-$LOAD_PATH.unshift(dir, File.join(dir, 'lib'), File.join(dir, '..', 'lib'))
+$LOAD_PATH.unshift(dir, File.join(dir, 'fixtures/modules/augeasprovider-core/spec/lib'), File.join(dir, '..', 'lib'))
 
 require 'rubygems'
 
 require 'simplecov'
 SimpleCov.start do
-  add_filter "/spec/fixtures/modules/mount_providers/"
-  add_filter { |src_file|
-    # gets loaded via spec/fixtures/modules/ap/lib
-    src_file.filename.end_with?("/lib/augeasproviders/provider.rb") and not src_file.filename =~ /fixtures/
-  }
   add_filter "/spec/lib/"
   add_filter "/spec/unit/"
 end
@@ -32,6 +27,6 @@ ver = Gem::Version.new(Puppet.version.split('-').first)
 if Gem::Requirement.new("~> 2.7.20") =~ ver || Gem::Requirement.new("~> 3.0.0") =~ ver
   puts "augeasproviders: setting Puppet[:libdir] to work around broken type autoloading"
   # libdir is only a single dir, so it can only workaround loading of one external module
-  Puppet[:libdir] = "#{Puppet[:modulepath]}/mount_providers/lib"
+  Puppet[:libdir] = "#{Puppet[:modulepath]}/augeasprovider-core/lib"
 end
 
