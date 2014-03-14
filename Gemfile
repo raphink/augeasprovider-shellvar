@@ -25,7 +25,5 @@ group :development do
   gem 'rake'
   gem 'rspec-puppet'
   gem 'simplecov'
-  gem 'yard'
-  gem 'redcarpet', '~> 2.0'
   gem 'pry'
 end
